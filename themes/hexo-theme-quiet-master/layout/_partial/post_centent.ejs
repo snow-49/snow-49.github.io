@@ -1,0 +1,106 @@
+<div class="article-content">
+    <div id="article" class="content">
+        <%- page.content %>
+    </div>
+</div>
+<style>
+    #noneimg img {
+        display: none;
+        z-index: 109;
+        width: 600px !important;
+        border-radius: 0px;
+        position: fixed;
+        box-shadow: 0 0 0px #c3c3c300 !important;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto !important;
+    }
+
+    @media screen and (max-width:600px) {
+        #noneimg img {
+            width: 88%
+        }
+    }
+</style>
+<script>
+    $(function () {
+        $('#article').click(function (e) {
+            if (e.target.tagName == "IMG") {
+                if ($('#nonediv').length == 0) {
+                    let MImg = `<div id='noneimg'><img src='${e.target.currentSrc}'></div>`;
+                    let MDiv =
+                        "<div id='nonediv' style='cursor: pointer;display: none; position: fixed;left: 0;top: 0; right: 0;bottom: 0;background-color: <%= theme.picture.colour %>;opacity:<%= theme.picture.opacity %>;z-index: 108;'></div>";
+                    $('#article').append(MDiv);
+                    $('#article').append(MImg);
+                    $("#nonediv").fadeIn("slow");
+                    $("#noneimg img").fadeIn("slow")
+                }
+            } else {
+                if ($('#nonediv').length !== 0) {
+                    $("#noneimg ").fadeOut("slow");
+                    $("#nonediv").fadeOut("slow");
+                    setTimeout(function () {
+                        $('#nonediv').remove();
+                        $('#noneimg').remove()
+                    }, 500)
+                }
+            }
+        });
+        $('.article-content').addClass('content-move');
+
+        var arr = [];
+        $("#article figure").each(function () {
+            let i = $(this).attr("class").replace("highlight ", ""),
+                x =
+                `<div class="code-nav"><i id=${i} class="iconfont">&#xe65e;</i><span class='test'>` +
+                i +
+                `</span><span id=${i}Copy>copy</span></div>`;
+            $(`.${i}`).before(x).hide();
+            arr.push(i)
+        });
+        arr.map(item => {
+            $(`#${item}`).click(function () {
+                if ($(`.${item}`).is(":visible")) {
+                    $(`.${item}`).slideUp(300);
+                    $(`#${item}`).html("&#xe65e;");
+                } else {
+                    $(`.${item}`).slideDown(300);
+                    $(`#${item}`).html("&#xe608;");
+                }
+            })
+            $(`#${item}Copy`).click(function () {
+                let txt = $(`.${item} table .code pre span`).text();
+                copy(txt)
+            })
+        })
+    });
+
+    function copy(txt) {
+        var isiOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+        var t = document.createElement("input");
+        t.value = txt
+        document.body.appendChild(t)
+        if (isiOS) {
+            t.position = "absolute";
+            t.style.left = "-9999px";
+            t.setAttribute("readonly", "");
+            var e = document.createRange();
+            e.selectNodeContents(t);
+            var i = window.getSelection();
+            i.removeAllRanges(),
+                i.addRange(e),
+                t.setSelectionRange(0, txt.length)
+        } else
+            t.select();
+        try {
+            document.execCommand("copy", !1, null)
+            alert("复制成功")
+
+        } catch (n) {
+            alert("复制失败，请手动复制")
+        }
+        t.remove()
+    }
+</script>

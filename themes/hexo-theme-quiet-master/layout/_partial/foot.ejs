@@ -1,0 +1,14 @@
+<%- css('css/food.css') %>
+<div class="footer">
+	<div class="Copyright">
+		©<%= new Date().getFullYear() %> By <%- theme.author %>.
+	</div>
+	<div class="contact">
+		<% theme.bottomIcon.forEach(item =>{%>
+		<a href="<%= item.toUrl %>">
+			<img src="<%= item.iconLink %>" alt="Quiet主题">
+		</a>
+		<% }) %>
+	</div>
+</div>
+<%- partial('_widget/gotop') %>
